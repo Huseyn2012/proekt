@@ -1,0 +1,71 @@
+import discord
+import os
+import random
+from discord.ext import commands
+from bot_logic import gen_pass
+
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix='$', intents=intents)
+
+@bot.event
+async def on_ready():
+    print(f'We have logged in as {bot.user}')
+
+@bot.command()
+async def hello(ctx):  # $hello
+    await ctx.send(f'Привет! как дела?)')
+
+@bot.command()
+async def repeat(ctx, times: int, content='repeating...'):
+    """Repeats a message multiple times."""
+    for i in range(times):
+        await ctx.send(content)
+
+@bot.command()
+async def password(ctx): # $password
+    await ctx.send(gen_pass(20))
+
+@bot.command()
+async def heh(ctx, count_heh = 5): # $heh 10
+    await ctx.send("he" * count_heh)
+@bot.command()
+async def bye(ctx):  # $bye
+    await ctx.send('До новых встреч')
+
+
+
+@bot.command()
+async def plastik(ctx):
+    spisok = ['Пластиковые контейнеры',
+              'Покрытие для дорог',
+              'Канцелярские товары',
+              'Мебель',
+              'Элементы городских сооружений',
+              'Одежда',]
+
+    await ctx.send(random.choice(spisok))
+
+@bot.command()
+async def pp(ctx):
+    spisok1 = ['Пищевые отходы = до 1 месяца',
+              'Газетная бумага = до 1 года',
+              'Стекло = более 1000 лет']
+
+    await ctx.send(random.choice(spisok1))
+
+@bot.command()
+async def rd(ctx):
+
+    spisok = os.listdir('images')
+    random_img = random.choice(spisok)
+
+    with open(f'images/{random_img}', 'rb') as f:
+        # В переменную кладем файл, который преобразуется в файл библиотеки Discord!
+        picture = discord.File(f)
+   # Можем передавать файл как параметр!
+
+    await ctx.send(file=picture)
+bot.run("")
